@@ -1,0 +1,17 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: vault-secret-provider
+spec:
+  provider: vault
+  parameters:
+    vaultAddress: "http://vault.default:8200"
+    roleName: "secrets-ro"
+    objects: |
+      - objectName: "db-password"
+        secretPath: "secret/data/db-secrets"
+        secretKey: "password"
+      - objectName: "db-user"
+        secretPath: "secret/data/db-secrets"
+        secretKey: "user"
+

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+  labels:
+    app: webapp
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      serviceAccountName: webapp-sa
+      containers:
+        - name: webapp
+          image: jweissig/app:0.0.1
+          volumeMounts:
+            - name: 'secrets-store-inline-vol'
+              mountPath: '/mnt/secrets-store'
+              readOnly: true
+      volumes:
+        - name: secrets-store-inline-vol
+          csi:
+            driver: 'secrets-store.csi.k8s.io'
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: 'vault-secret-provider'
